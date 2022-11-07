@@ -1,1 +1,4 @@
-// require thought and user model and export
+const Pizza = require('./Thought');
+const Comment =  require('./User');
+
+module.exports = { Thought, User };
