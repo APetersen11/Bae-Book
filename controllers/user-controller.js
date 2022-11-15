@@ -38,6 +38,22 @@ const userController = {
         res.status(500).json(error);
       });
   },
+  addFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.params.friendId } },
+      { new: true }
+    )
+      .then((dbUserData) => {
+        res.json(dbUserData);
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json(error);
+      });
+  },
+
+  // remove friend -> still update user but $pull instead of $add to set
 };
 
 module.exports = userController;
