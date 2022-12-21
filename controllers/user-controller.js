@@ -38,6 +38,21 @@ const userController = {
         res.status(500).json(error);
       });
   },
+  updateUser({ body, params }, res) {
+    User.findOneAndUpdate({ _id: params.id }, { $set: body }, { new: true })
+      .then((dbUserData) => res.json(dbUserData))
+      .catch((err) => res.status(400).json(err));
+  },
+
+  deleteUser({ params }, res) {
+    Thought.deleteMany({ userId: params.id })
+      .then((result) => {
+        return User.findOneAndDelete({ _id: params.id }, { new: true });
+      })
+      .then((dbUserData) => res.json(dbUserData))
+      .catch((err) => res.status(400).json(err));
+  },
+
   addFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userId },
@@ -53,7 +68,14 @@ const userController = {
       });
   },
 
-  // remove friend -> still update user but $pull instead of $add to set
-};
+  removeFriend ({params}, res) {
+    User.findOneAndUpdate(
+        { _id: params.userId },
+        { $pull: {friends: params.friendId}},
+        {new: true}
+    )
+    .then(dbUserData => res.json(dbUserData))
+    .catch(err => res.status(400).json(err))
+}};
 
 module.exports = userController;
