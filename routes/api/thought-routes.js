@@ -1,5 +1,3 @@
-//put and delete
-
 const router = require("express").Router();
 const {
   getThoughts,

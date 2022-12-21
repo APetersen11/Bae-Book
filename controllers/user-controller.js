@@ -1,5 +1,3 @@
-// add put and delete
-
 const { User, Thought } = require("../models");
 const userController = {
   getUsers(req, res) {
@@ -13,20 +11,24 @@ const userController = {
         res.status(500).json(error);
       });
   },
-  getSingleUser(req, res) {
-    User.findOne({
-      _id: req.params.userId,
+
+  getSingleUser({ params }, res) {
+    User.findOne({_id: params.id})
+    .populate({
+        path: 'thoughts',
+        select: '-__v'
     })
-      .select("-__v")
-      .populate("thoughts")
-      .populate("friends")
-      .then((dbUserData) => {
-        res.json(dbUserData);
-      })
-      .catch((error) => {
-        console.log(error);
-        res.status(500).json(error);
-      });
+    .then(dbUserData => {
+        if(!dbUserData) {
+            res.status(404).json({ message: 'no user found'})
+            return
+        }
+        res.json(dbUserData)
+    })            
+    .catch(err => {
+        console.log(err)
+        res.status(400).json(err)
+    })
   },
   createUser(req, res) {
     User.create(req.body)
@@ -60,11 +62,14 @@ const userController = {
       { new: true }
     )
       .then((dbUserData) => {
+        if (!dbUserData) {
+          return res.status(404).json({ message: "No user with this id!" });
+        }
         res.json(dbUserData);
       })
-      .catch((error) => {
-        console.log(error);
-        res.status(500).json(error);
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
       });
   },
 
