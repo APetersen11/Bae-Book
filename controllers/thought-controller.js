@@ -29,21 +29,22 @@ const thoughtController ={
         });
       },
 
-      createThought(req, res) {
+      createThought({ body }, res) {
         Thought.create(body)
-        .then(
-          (body) =>
-            User.findOneAndUpdate(
-              { _id: body.userId },
-              { $push: { thoughts: body._id } },
-              { new: true }
-            ),
-          console.log(body)
-        )
-        .then((dbThoughtData) => res.json(dbThoughtData))
-        .catch((err) => res.status(400).json(err));
-    },
+          .then(
+            (body) =>
+              User.findOneAndUpdate(
+                { _id: body.userId },
+                { $push: { thoughts: body._id } },
+                { new: true }
+              ),
+            console.log(body)
+          )
+          .then((dbThoughtData) => res.json(dbThoughtData))
+          .catch((err) => res.status(400).json(err));
+      },
     
+
       updateThought({ body, params }, res) {
         Thought.findOneAndUpdate(
             { _id: params.id },
