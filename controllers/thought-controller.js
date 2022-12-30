@@ -63,6 +63,8 @@ const thoughtController ={
             .then(dbThoughtData => res.json(dbThoughtData))
             .catch(err => res.status(400).json(err))
     },
+
+    
     addReaction({ params, body }, res) {
         Thought.findOneAndUpdate(
             { _id: params.thoughtId },
